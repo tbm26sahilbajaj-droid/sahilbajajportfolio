@@ -1,11 +1,17 @@
 "use client";
 
-import { motion, useInView, useMotionValue, useTransform } from "framer-motion";
-import { useRef, MouseEvent } from "react";
-import { Sparkles, TrendingUp, BarChart3, ShoppingBag } from "lucide-react";
-import { projects } from "@/data/projects";
+import { motion, useInView, useMotionValue, useTransform, AnimatePresence } from "framer-motion";
+import { useRef, useState, MouseEvent } from "react";
+import { Sparkles, TrendingUp, BarChart3, ShoppingBag, Code2, Rocket } from "lucide-react";
+import { projects, segments, type ProjectSegment } from "@/data/projects";
 
-const projectIcons = [Sparkles, TrendingUp, BarChart3, ShoppingBag];
+const segmentIcons: Record<string, typeof Sparkles> = {
+  "Engineering": Code2,
+  "Product & Strategy": BarChart3,
+  "GTM & Business": Rocket,
+};
+
+const projectIcons = [Sparkles, TrendingUp, BarChart3, ShoppingBag, Code2, Rocket];
 
 function SpotlightCard({
   children,
@@ -48,7 +54,6 @@ function SpotlightCard({
       transition={{ type: "spring", stiffness: 200, damping: 15 }}
       className={`relative overflow-hidden ${className}`}
     >
-      {/* Spotlight gradient */}
       <motion.div
         className="absolute pointer-events-none w-60 h-60 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
         style={{
@@ -67,6 +72,11 @@ function SpotlightCard({
 export default function Projects() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const [activeSegment, setActiveSegment] = useState<ProjectSegment>("All");
+
+  const filtered = activeSegment === "All"
+    ? projects
+    : projects.filter((p) => p.segment === activeSegment);
 
   return (
     <section id="projects" className="py-32 px-6 relative" ref={ref}>
@@ -84,56 +94,101 @@ export default function Projects() {
           </h2>
         </motion.div>
 
-        <div className="mt-16 grid md:grid-cols-2 gap-6" style={{ perspective: "1000px" }}>
-          {projects.map((project, i) => {
-            const Icon = projectIcons[i % projectIcons.length];
-            return (
-              <motion.div
-                key={project.title}
-                initial={{ opacity: 0, y: 50 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <SpotlightCard className="group bg-[#1a1a2e]/30 border border-[#2a2a4a]/20 rounded-2xl p-6 backdrop-blur-sm hover:border-[#BF80FF]/15 transition-all duration-300 cursor-pointer hover:shadow-[0_0_40px_rgba(191,128,255,0.08)]">
-                  {/* Header */}
-                  <div className="flex items-start justify-between mb-5">
-                    <div className="p-3 bg-[#BF80FF]/8 rounded-xl group-hover:bg-[#BF80FF]/15 group-hover:shadow-[0_0_20px_rgba(191,128,255,0.1)] transition-all duration-300">
-                      <Icon size={22} className="text-[#BF80FF]" />
+        {/* Segment filter tabs */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mt-10 flex flex-wrap gap-2"
+        >
+          {segments.map((seg) => (
+            <button
+              key={seg}
+              onClick={() => setActiveSegment(seg)}
+              className={`relative px-5 py-2 text-sm font-medium rounded-full transition-all duration-300 cursor-pointer ${
+                activeSegment === seg
+                  ? "text-black"
+                  : "text-gray-400 hover:text-white border border-white/5 hover:border-white/10"
+              }`}
+            >
+              {activeSegment === seg && (
+                <motion.div
+                  layoutId="activeSegment"
+                  className="absolute inset-0 bg-white rounded-full"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
+              <span className="relative z-10 flex items-center gap-1.5">
+                {seg !== "All" && (() => {
+                  const Icon = segmentIcons[seg];
+                  return Icon ? <Icon size={14} /> : null;
+                })()}
+                {seg}
+              </span>
+            </button>
+          ))}
+        </motion.div>
+
+        {/* Project cards */}
+        <div className="mt-10 grid md:grid-cols-2 gap-6" style={{ perspective: "1000px" }}>
+          <AnimatePresence mode="popLayout">
+            {filtered.map((project, i) => {
+              const Icon = projectIcons[i % projectIcons.length];
+              return (
+                <motion.div
+                  key={project.title}
+                  layout
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.4, delay: i * 0.08 }}
+                >
+                  <SpotlightCard className="group bg-[#1a1a2e]/30 border border-[#2a2a4a]/20 rounded-2xl p-6 backdrop-blur-sm hover:border-[#BF80FF]/15 transition-all duration-300 cursor-pointer hover:shadow-[0_0_40px_rgba(191,128,255,0.08)]">
+                    {/* Header */}
+                    <div className="flex items-start justify-between mb-5">
+                      <div className="p-3 bg-[#BF80FF]/8 rounded-xl group-hover:bg-[#BF80FF]/15 group-hover:shadow-[0_0_20px_rgba(191,128,255,0.1)] transition-all duration-300">
+                        <Icon size={22} className="text-[#BF80FF]" />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] text-[#BF80FF] bg-[#BF80FF]/8 px-2.5 py-1 rounded-full border border-[#BF80FF]/15 font-medium uppercase tracking-wider">
+                          {project.segment}
+                        </span>
+                        <span className="text-xs text-[#9CA3AF] bg-[#000000]/50 px-3 py-1 rounded-full border border-[#2a2a4a]/20">
+                          {project.period}
+                        </span>
+                      </div>
                     </div>
-                    <span className="text-xs text-[#9CA3AF] bg-[#000000]/50 px-3 py-1 rounded-full border border-[#2a2a4a]/20">
-                      {project.period}
-                    </span>
-                  </div>
 
-                  {/* Content */}
-                  <h3 className="text-lg font-bold text-white font-[family-name:var(--font-space-grotesk)] mb-3 group-hover:text-[#BF80FF] transition-colors duration-300">
-                    {project.title}
-                  </h3>
-                  <p className="text-sm text-[#9CA3AF] leading-relaxed mb-5">
-                    {project.description}
-                  </p>
+                    {/* Content */}
+                    <h3 className="text-lg font-bold text-white font-[family-name:var(--font-space-grotesk)] mb-3 group-hover:text-[#BF80FF] transition-colors duration-300">
+                      {project.title}
+                    </h3>
+                    <p className="text-sm text-[#9CA3AF] leading-relaxed mb-5">
+                      {project.description}
+                    </p>
 
-                  {/* Metrics */}
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {project.metrics.map((metric) => (
-                      <span key={metric} className="px-3 py-1 text-xs bg-[#BF80FF]/8 text-[#BF80FF] rounded-full border border-[#BF80FF]/15 font-medium">
-                        {metric}
-                      </span>
-                    ))}
-                  </div>
+                    {/* Metrics */}
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {project.metrics.map((metric) => (
+                        <span key={metric} className="px-3 py-1 text-xs bg-[#BF80FF]/8 text-[#BF80FF] rounded-full border border-[#BF80FF]/15 font-medium">
+                          {metric}
+                        </span>
+                      ))}
+                    </div>
 
-                  {/* Tags */}
-                  <div className="flex flex-wrap gap-1.5">
-                    {project.tags.map((tag) => (
-                      <span key={tag} className="px-2.5 py-1 text-xs bg-[#000000]/50 text-[#9CA3AF] rounded-lg border border-[#2a2a4a]/20">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </SpotlightCard>
-              </motion.div>
-            );
-          })}
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-1.5">
+                      {project.tags.map((tag) => (
+                        <span key={tag} className="px-2.5 py-1 text-xs bg-[#000000]/50 text-[#9CA3AF] rounded-lg border border-[#2a2a4a]/20">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </SpotlightCard>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
         </div>
       </div>
     </section>
