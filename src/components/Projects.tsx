@@ -176,13 +176,29 @@ export default function Projects() {
                       ))}
                     </div>
 
-                    {/* Tags */}
-                    <div className="flex flex-wrap gap-1.5">
-                      {project.tags.map((tag) => (
-                        <span key={tag} className="px-2.5 py-1 text-xs bg-[#000000]/50 text-[#9CA3AF] rounded-lg border border-[#2a2a4a]/20">
-                          {tag}
-                        </span>
-                      ))}
+                    {/* Tags + Link */}
+                    <div className="flex items-end justify-between gap-2">
+                      <div className="flex flex-wrap gap-1.5">
+                        {project.tags.map((tag) => (
+                          <span key={tag} className="px-2.5 py-1 text-xs bg-[#000000]/50 text-[#9CA3AF] rounded-lg border border-[#2a2a4a]/20">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                      {project.link && (
+                        <a
+                          href={project.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="shrink-0 flex items-center gap-1 text-xs text-[#BF80FF] hover:text-white border border-[#BF80FF]/20 hover:border-[#BF80FF]/60 px-3 py-1.5 rounded-full transition-all duration-200"
+                        >
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+                          </svg>
+                          Live
+                        </a>
+                      )}
                     </div>
                   </SpotlightCard>
                 </motion.div>

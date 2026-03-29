@@ -64,6 +64,16 @@ export const projects: Project[] = [
     link: null,
   },
   {
+    title: "MedQuick",
+    description:
+      "AI-powered health records app that centralizes prescriptions and medical tests under one platform with smart medication reminders. Conducted full market research covering TAM/SAM/SOM, competitive landscape, and user personas. Built and shipped a live product.",
+    tags: ["AI/ML", "Healthcare", "Product Strategy", "Market Research", "Go-to-Market"],
+    period: "2025",
+    metrics: ["Live product", "Full market research", "AI reminders"],
+    segment: "Product & Strategy",
+    link: "https://medquickk.lovable.app/",
+  },
+  {
     title: "Dropshipping - Nirmalaya Partnership",
     description:
       "Launched and operated an e-commerce dropshipping business selling Incense Sticks in partnership with Nirmalaya. Executed full GTM strategy from sourcing to customer acquisition, generating significant revenue in 3 months.",
