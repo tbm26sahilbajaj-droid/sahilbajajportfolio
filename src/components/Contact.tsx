@@ -15,7 +15,7 @@ function GithubIcon({ size = 24 }: { size?: number }) {
 const contactLinks = [
   { icon: Mail, label: "Email", value: "Send me an email", href: "mailto:tbm26sahil.bajaj@mastersunion.org" },
   { icon: Phone, label: "Phone", value: "Give me a call", href: "tel:+919266365444" },
-  { icon: LinkedinIcon, label: "LinkedIn", value: "Connect with me", href: "https://linkedin.com/in/sahilbajaj" },
+  { icon: LinkedinIcon, label: "LinkedIn", value: "Connect with me", href: "https://www.linkedin.com/in/sahilbajaj1/" },
 ];
 
 export default function Contact() {
