@@ -122,7 +122,7 @@ export default function About() {
               {[
                 { value: 2, suffix: "+", label: "Years at Amazon" },
                 { value: 7, suffix: "K+", label: "Users impacted" },
-                { value: 3, suffix: "", label: "Countries lived" },
+                { value: 2, suffix: "", label: "Countries lived" },
               ].map((stat) => (
                 <div key={stat.label} className="text-center p-4 bg-[#1a1a2e]/30 border border-[#2a2a4a]/20 rounded-2xl backdrop-blur-sm">
                   <div className="text-3xl font-bold text-[#BF80FF] font-[family-name:var(--font-space-grotesk)]">
